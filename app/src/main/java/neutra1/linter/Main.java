@@ -137,7 +137,7 @@ public class Main implements Runnable {
         if (!path.isAbsolute()){
             path = currentDir.resolve(filePath);
         }
-        String content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+        String content = new String(Files.readAllBytes(path), StandardCharsets.US_ASCII);
         return content;
     }
     

@@ -54,7 +54,7 @@ public class Rule11 extends LinkRule implements IFileRule {
             );
             pb.redirectErrorStream(true);
             Process process = pb.start();
-            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.UTF_8))) {
+            try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream(), StandardCharsets.US_ASCII))) {
                 for (LinkInfo link : externalLinkList) {
                     writer.write(link.url());
                     writer.newLine();
@@ -63,7 +63,7 @@ public class Rule11 extends LinkRule implements IFileRule {
             } 
             StringBuilder lycheeOutputSb = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(process.getInputStream(), StandardCharsets.UTF_8))) {
+                    new InputStreamReader(process.getInputStream(), StandardCharsets.US_ASCII))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     lycheeOutputSb.append(line);
