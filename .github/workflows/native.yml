@@ -1,0 +1,74 @@
+name: Native image
+
+# Builds standalone GraalVM native-image executables for Linux, macOS and
+# Windows. Every run uploads the binaries as downloadable workflow artifacts;
+# pushing a version tag (e.g. v1.2.3) additionally attaches them to the
+# matching GitHub Release.
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+
+permissions:
+  contents: write # needed to attach binaries to a Release on tag builds
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  native:
+    name: Native image (${{ matrix.label }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux-x64
+          - os: macos-latest
+            label: macos-arm64
+          - os: windows-latest
+            label: windows-x64
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up GraalVM (JDK 21)
+        uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: "21"
+          distribution: graalvm
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build native image
+        # The GraalVM buildtools plugin's generateResourcesConfigFile task cannot be
+        # serialized into Gradle's configuration cache (enabled in gradle.properties),
+        # so disable the cache for this invocation only. The JVM build still uses it.
+        run: ./gradlew nativeCompile --no-configuration-cache --stacktrace
+
+      - name: Stage binary
+        shell: bash
+        run: |
+          mkdir -p dist
+          src="app/build/native/nativeCompile"
+          if [ -f "$src/madrlint.exe" ]; then
+            cp "$src/madrlint.exe" "dist/madrlint-${{ matrix.label }}.exe"
+          else
+            cp "$src/madrlint" "dist/madrlint-${{ matrix.label }}"
+          fi
+
+      - name: Upload binary artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: madrlint-${{ matrix.label }}
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Attach binary to Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v3
+        with:
+          files: dist/*
