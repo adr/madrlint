@@ -37,7 +37,8 @@ jobs:
       - name: Build launcher
         run: jbang build madrlint.java
 
-      - name: Smoke test
-        run: |
-          jbang madrlint.java --help
-          jbang madrlint.java madr-samples/0011-use-asterisk-as-list-marker.md
+      - name: Smoke test (--help)
+        run: jbang madrlint.java --help
+
+      - name: Smoke test (lint a sample MADR file)
+        run: jbang madrlint.java madr-samples/0011-use-asterisk-as-list-marker.md
