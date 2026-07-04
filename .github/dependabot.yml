@@ -8,8 +8,8 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 10
     groups:
-      # Bundle all minor/patch bumps into a single PR so they can be
-      # reviewed and auto-merged together. Major bumps stay separate.
+      # Bundle minor/patch bumps into one PR; major bumps get their own PR
+      # so a risky upgrade stays isolated. Both auto-merge once CI is green.
       gradle-minor-and-patch:
         update-types:
           - "minor"

@@ -1,9 +1,8 @@
 name: Dependabot auto-merge
 
-# Approves and enables auto-merge for Dependabot PRs that only bump
-# minor or patch versions. Auto-merge waits for the required status
-# checks (the "Build" workflow) to pass before merging, so nothing is
-# merged blindly. Major version bumps are left for manual review.
+# Approves and enables auto-merge for every Dependabot PR, including major
+# version bumps. Auto-merge only completes once the branch's required status
+# checks pass, so a PR is never merged unless CI is green.
 
 on: pull_request
 
@@ -16,14 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Fetch Dependabot metadata
-        id: metadata
-        uses: dependabot/fetch-metadata@v2
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Approve and enable auto-merge for minor/patch updates
-        if: steps.metadata.outputs.update-type == 'version-update:semver-patch' || steps.metadata.outputs.update-type == 'version-update:semver-minor'
+      - name: Approve and enable auto-merge
         run: |
           gh pr review --approve "$PR_URL"
           gh pr merge --auto --squash "$PR_URL"
