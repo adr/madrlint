@@ -34,7 +34,7 @@ jobs:
             label: windows-x64
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up GraalVM (JDK 21)
         uses: graalvm/setup-graalvm@v1
@@ -61,7 +61,7 @@ jobs:
           fi
 
       - name: Upload binary artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: madrlint-${{ matrix.label }}
           path: dist/*
@@ -69,6 +69,6 @@ jobs:
 
       - name: Attach binary to Release
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           files: dist/*
