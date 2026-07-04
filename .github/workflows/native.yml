@@ -44,7 +44,10 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build native image
-        run: ./gradlew nativeCompile --stacktrace
+        # The GraalVM buildtools plugin's generateResourcesConfigFile task cannot be
+        # serialized into Gradle's configuration cache (enabled in gradle.properties),
+        # so disable the cache for this invocation only. The JVM build still uses it.
+        run: ./gradlew nativeCompile --no-configuration-cache --stacktrace
 
       - name: Stage binary
         shell: bash
