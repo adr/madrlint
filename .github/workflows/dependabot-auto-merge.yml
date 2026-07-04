@@ -1,8 +1,10 @@
 name: Dependabot auto-merge
 
-# Approves and enables auto-merge for every Dependabot PR, including major
-# version bumps. Auto-merge only completes once the branch's required status
-# checks pass, so a PR is never merged unless CI is green.
+# Enables auto-merge for every Dependabot PR, including major version bumps.
+# Auto-merge only completes once the branch's required status checks pass, so
+# a PR is never merged unless CI is green. No approval step is needed: the
+# branch ruleset requires zero approving reviews, and GITHUB_TOKEN is not
+# permitted to approve pull requests anyway.
 
 on: pull_request
 
@@ -15,10 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Approve and enable auto-merge
-        run: |
-          gh pr review --approve "$PR_URL"
-          gh pr merge --auto --squash "$PR_URL"
+      - name: Enable auto-merge
+        run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
