@@ -50,14 +50,13 @@ public class Rule02 extends SectionRule implements IFileRule {
             });
         }
         if (!emptyBodyHeadings.isEmpty()) {
-            StringBuilder desc = new StringBuilder("The following sections are empty:\n");
             emptyBodyHeadings.forEach(headingInfo -> {
+                StringBuilder desc = new StringBuilder();
                 String heading = headingInfo.text();
                 int lineNumber = headingInfo.startLineNumber();
-                desc.append(LISTING_INDENT_SHORT + "Line " + lineNumber + ": " + heading + "\n");
-            }
-            );
-            reporter.report(new Violation(RULE_ID, desc.toString(), -1));
+                desc.append("Empty section detected: " + heading);
+                reporter.report(new Violation(RULE_ID, desc.toString(), lineNumber));
+            });
         }
     }
 }

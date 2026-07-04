@@ -2,6 +2,7 @@ package neutra1.linter.core;
 
 import java.util.List;
 
+import neutra1.linter.helper.LintContext;
 import neutra1.linter.models.records.Violation;
 
 import java.io.IOException;
@@ -68,13 +69,13 @@ public class Reporter {
 
     private StringBuilder getDiagnosis() {
         StringBuilder diagnosis = new StringBuilder();
-        violationList.sort(Comparator.comparingInt(Violation::getRuleNumber));
+        violationList.sort(Comparator.comparingInt(Violation::lineNumber));
         for (Violation v : violationList) {
-            if (v.lineNumber() == -1) {
-                diagnosis.append("[" + v.ruleId() + "] " + v.description() + "\n");
+            if (v.representativeMadr().isEmpty()){
+                diagnosis.append(LintContext.USER_PATH + ":" + v.lineNumber() + " " + "[" + v.ruleId() + "]" + " " + v.description() + "\n");
             }
             else {
-                diagnosis.append("[" + v.ruleId() + "] Line " + v.lineNumber() + ": " + v.description() + "\n");
+                diagnosis.append(v.representativeMadr().get() + ":" + v.lineNumber() + " " + "[" + v.ruleId() + "]" + " " + v.description() + "\n");
             }
         }
         return diagnosis;

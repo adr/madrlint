@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import neutra1.linter.helper.IgnoreFileHandler;
@@ -90,12 +91,12 @@ public abstract class NamingRule extends AbstractRule{
         }
     }
 
-    protected void report(List<String> files, String ruleId, String openingMessage) {
+    protected void report(List<String> files, String ruleId, String desc) {
         if (files.isEmpty()) {
             return;
         }
-        StringBuilder description = new StringBuilder(openingMessage);
-        files.stream().forEach(file -> description.append(LISTING_INDENT_SHORT).append(file).append("\n"));
-        reporter.report(new Violation(ruleId, description.toString(), -1));
+        files.stream().forEach(file -> {
+            reporter.report(new Violation(ruleId, desc, 1, Optional.of(file)));
+        });
     }
 }

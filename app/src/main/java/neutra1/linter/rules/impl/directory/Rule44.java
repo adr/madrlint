@@ -3,9 +3,9 @@ package neutra1.linter.rules.impl.directory;
 import neutra1.linter.rules.NamingRule;
 import neutra1.linter.rules.IDirectoryRule;
 
-public class Rule15 extends NamingRule implements IDirectoryRule {
+public class Rule44 extends NamingRule implements IDirectoryRule {
     
-    private final String RULE_ID = "MADR15";
+    private final String RULE_ID = "MADR44";
 
     @Override
     public void check(){
@@ -14,11 +14,11 @@ public class Rule15 extends NamingRule implements IDirectoryRule {
 
     @Override
     public int getRuleNumber(){
-        return 15;
+        return 44;
     }
 
     private void reportMadrsWithNamingViolations(){
-        String openingMessage = "The following MADR files do not follow the MADR file naming conventions (XXXX-decision-taken.md, where X is a digit from 0-9):\n";
+        String openingMessage = "Invalid filename. Expected format: 'XXXX-brief-description.md'";
         this.report(madrsWithNamingViolations, RULE_ID, openingMessage);
     }
 }

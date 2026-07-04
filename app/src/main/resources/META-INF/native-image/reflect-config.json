@@ -284,7 +284,7 @@
         "allDeclaredFields": true
     },
     {
-        "name": "neutra1.linter.rules.impl.atomic.Rule08$FailedLink",
+        "name": "neutra1.linter.rules.impl.file.Rule11$FailedLink",
         "allDeclaredFields": true,
         "methods": [
             {
@@ -302,7 +302,7 @@
         ]
     },
     {
-        "name": "neutra1.linter.rules.impl.atomic.Rule08$FailedLinkReport",
+        "name": "neutra1.linter.rules.impl.file.Rule11$FailedLinkReport",
         "allDeclaredFields": true,
         "methods": [
             {

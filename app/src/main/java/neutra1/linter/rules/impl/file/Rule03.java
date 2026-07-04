@@ -31,7 +31,7 @@ public class Rule03 extends SectionRule implements IFileRule {
         }
         Node nodeDecisionOutcome = findNodeByKeywords(decisionOutcome.body(), DecisionOutcomeElements.CHOSEN_OPTION.getKeywords());
         if (nodeDecisionOutcome == null) {
-            String description = "Chosen option is missing in the Decision Outcome section (Keyword: Chosen Option or Chosen Alternative).\n";
+            String description = "Expected statement of chosen option inside Decision Outcome. Expected format: 'Chosen option: <chosen option>, because <rationale>'";
             int lineNumber = decisionOutcome.startLineNumber();
             reporter.report(new Violation(RULE_ID_A, description, lineNumber));
             return;
@@ -41,7 +41,7 @@ public class Rule03 extends SectionRule implements IFileRule {
         List<String> firstNodeLines = List.of(firstNodeText.split("\n"));
         String firstLine = firstNodeLines.get(0);
         if (!DecisionOutcomeElements.CHOSEN_OPTION.matches(firstLine, true)) {
-            String description = "Per convention, Chosen Option is always mentioned first in Decision Outcome section.\n";
+            String description = "Decision Outcome section must start with statement of chosen option";
             int lineNumber = getLineNumberByContent(decisionOutcome,
                 DecisionOutcomeElements.CHOSEN_OPTION.getKeywords());
             reporter.report(new Violation(RULE_ID_B, description, lineNumber));  

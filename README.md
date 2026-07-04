@@ -45,38 +45,47 @@ madrlint <madrFile>
                                suppressed.
 ```
 ## Rules
-### Heading rules
+
+### Structural integrity
+
 ```
 01. Mandatory sections: Title (a), Context and Problem Statement (b),
     Considered Options (c), Decision Outcome (d) must be present.
-10. Heading levels of sections must conform to template´s
-11. Sections Consequences (a) and Confirmation (b), if present, must be direct subsections of Decision Outcome.
-07. Only the title is allowed to have heading level 1.
+02. No sections may be empty.
+03. Chosen option must be mentioned first (b) inside Decision Outcome (a). Expected format: 'Chosen option: <chosen option>, because <rationale>'.
+04. Statement of chosen option must be followed by rationale in this format 'Chosen option: <chosen option>, because <rationale>'.
+05. Only the title is allowed to have heading level 1.
+06. Headings must have levels conforming to template's
+07. Consequences (a) and Confirmation (b), if present, must be H3 headings under Decision Outcome
 ```
 
-### Section rules
+### Link validity
+
 ```
-02. No sections may be empty.
-03. Chosen option should always be present (a) and mentioned first (b) in decision outcome section.
-04. Chosen alternative must be followed by rationale.
-13. Asterisks (*) should be used as list marker.
+11. Internet links must be valid.
+12. Local links (Anchor links, local paths to resources, etc) must be valid.
 ```
-### Naming rules
+
+### Syntactic validity
+
 ```
-05. The numberings of ADRs within the containing folder should start with either 0000 or 
+21. Metadata content must have proper syntax adhering to YAML rules.
+```
+
+### Stylistic neutrality
+
+```
+31. Asterisks (*) must be used as list markers.
+```
+
+### Organizational soundness
+
+```
+41. The numberings of ADRs within the ADR directory must start with either 0000 or 
 0001 (a) and feature no skips (b).
-06. MADRs should be contained in a directory dedicated to them.
-09. No collisions of numberings between MADRs in the same folder.
-15. Following naming scheme should be followed: xxxx-short-description-of-decision.md.
-```
-### Link rules
-```
-08. External links must be valid and reachable.
-14. Local links (Anchor links, local paths to resources, etc) must be valid.
-```
-### Metadata rules
-```
-12. Metadata content must have proper syntax adhering to YAML rules.
+42. No 'foreign' files may be present inside ADR directory.
+43. No collisions of numberings between MADRs in the same folder.
+44. MADRs must follow the naming scheme: 'XXXX-brief-description.md'
 ```
 The rules marked with * are rules for which checks are yet to be implemented.
 

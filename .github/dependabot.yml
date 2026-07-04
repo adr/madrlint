@@ -1,0 +1,26 @@
+version: 2
+updates:
+  # Java / Gradle dependencies (inline versions in build.gradle.kts,
+  # the version catalog in gradle/libs.versions.toml, and Gradle plugins).
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      # Bundle minor/patch bumps into one PR; major bumps get their own PR
+      # so a risky upgrade stays isolated. Both auto-merge once CI is green.
+      gradle-minor-and-patch:
+        update-types:
+          - "minor"
+          - "patch"
+
+  # Versions of the actions used in the workflows below.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

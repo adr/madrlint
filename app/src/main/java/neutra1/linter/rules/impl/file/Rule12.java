@@ -1,17 +1,26 @@
 package neutra1.linter.rules.impl.file;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import com.github.sbaudoin.yamllint.LintProblem;
-
-import neutra1.linter.models.records.MetadataInfo;
+import neutra1.linter.helper.LintContext;
+import neutra1.linter.models.enums.LinkType;
+import neutra1.linter.models.records.HeadingInfo;
+import neutra1.linter.models.records.LinkInfo;
 import neutra1.linter.models.records.Violation;
 import neutra1.linter.rules.IFileRule;
-import neutra1.linter.rules.MetadataRule;
+import neutra1.linter.rules.LinkRule;
 
-public class Rule12 extends MetadataRule implements IFileRule {
-    
-    private final String RULE_ID = "MADR12";
+public class Rule12 extends LinkRule implements IFileRule {
+
+    private final String RULE_ID_A = "MADR12a";
+    private final String RULE_ID_B = "MADR12b";
+    private final String RULE_ID_C = "MADR12c";
+    private final String RULE_ID_D = "MADR12d";
 
     public Rule12(){
         super();
@@ -24,34 +33,57 @@ public class Rule12 extends MetadataRule implements IFileRule {
 
     @Override
     public void check(){
-        List<MetadataInfo> metadataInfoList = traverser.getMetadataInfoList();
-        if (metadataInfoList.size() == 0){
+        Map<String, Integer> badLocalPaths = new HashMap<>();
+        Map<String, Integer> absolutePaths = new HashMap<>();
+        Map<String, Integer> badAnchorLinks = new HashMap<>();
+        Map<String, Integer> badRootRelativePaths = new HashMap<>();
+        List<LinkInfo> localLinks = traverser.getLinkInfoList().stream().filter(linkInfo -> linkInfo.linkType() == LinkType.LOCAL).toList();
+        for (LinkInfo localLink : localLinks) {
+            String url = localLink.url();
+            int startLineNumber = localLink.startLineNumber();
+            if (isAbsolutePath(url)){
+                absolutePaths.put(url, startLineNumber);
+            }
+            else if (isAnchorLink(url)){
+                List<HeadingInfo> headingInfoList = traverser.getHeadingInfoList();
+                List<String> slugList = headingInfoList.stream().map(headingInfo -> headingInfo.toSlug()).toList();
+                boolean matches = slugList.stream().anyMatch(slug -> slug.equals(url.substring(1)));
+                if (!matches){
+                    badAnchorLinks.put(url, startLineNumber);
+                }
+            }
+            else if (isRootRelativeLink(url)){
+                String urlRelativized = url.substring(1);
+                Path resolved = Paths.get(LintContext.PROJECT_ROOT).resolve(urlRelativized);
+                if (!Files.exists(resolved)){
+                    badRootRelativePaths.put(url, startLineNumber);
+                }
+            }
+            else {
+                try{
+                    boolean exists = pathExists(url);
+                    if (!exists){
+                        badLocalPaths.put(url, startLineNumber);
+                    }
+                }
+                catch (Exception e){
+                    badLocalPaths.put(url, startLineNumber);
+                }
+            }
+        }
+        buildDescription("Invalid local path detected: ", badLocalPaths, RULE_ID_A);
+        buildDescription("Invalid anchor link detected: ", badAnchorLinks, RULE_ID_B);
+        buildDescription("Invalid root relative path detected: ", badRootRelativePaths, RULE_ID_C);
+        buildDescription("Non-renderable absolute path detected:", absolutePaths, RULE_ID_D);    
+    } 
+
+    private void buildDescription(String foreword, Map<String, Integer> brokenLinks, String ruleId){
+        if (brokenLinks.isEmpty()){
             return;
         }
-        int startLineNumber = metadataInfoList.get(0).startLineNumber();
-        List<LintProblem> problems = metadataInfoList.get(0).problems();
-        if (problems.size() == 0){
-            return;
-        }
-        StringBuilder descriptionBuilder = new StringBuilder("Metadata section has issues that may either prevent " + 
-                                                            "it from being rendered properly by most parsers\n" + 
-                                                            DESCRIPTION_INDENT_SHORT + 
-                                                            "or do not conform to YAML conventions: \n");
-        for (int i = 0; i < problems.size(); i++){
-            String current = problems.get(i).toString();
-            String[] parts = current.split(":", 3);
-            int line = Integer.parseInt(parts[0]) + startLineNumber;
-            String desc = capitalize(parts[2]);
-            descriptionBuilder.append(LISTING_INDENT_SHORT + "Line " + line + ": " + desc + "\n");
-        }
-        reporter.report(new Violation(RULE_ID, descriptionBuilder.toString(), -1));
+        brokenLinks.forEach((url, lineNumber) -> {
+            String desc = foreword + url;
+            reporter.report(new Violation(ruleId, desc, lineNumber));
+        });
     }
-
-    private String capitalize(String s) {
-        if (s == null || s.isEmpty()) {
-            return s;
-        }
-        return s.substring(0, 1).toUpperCase() + s.substring(1);
-    }
-
 }

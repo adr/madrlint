@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Map;
 
 import neutra1.linter.helper.LintContext;
 
@@ -50,17 +49,6 @@ public abstract class LinkRule extends AbstractRule{
         Path containingDir = madrPath.getParent();
         Path resolvedPath = containingDir.resolve(urlText).normalize();
         return Files.exists(resolvedPath);    
-    }
-
-    protected void buildDescription(String linkType, Map<String, Integer> brokenLinks, StringBuilder description){
-        if (brokenLinks.isEmpty()){
-            return;
-        }
-        if (!linkType.equals("")){
-            description.append(DESCRIPTION_INDENT_LONG + linkType);
-        }
-        brokenLinks.entrySet().stream().sorted(Map.Entry.comparingByValue())
-        .forEach(entry -> description.append(LISTING_INDENT_LONG + "Line " + entry.getValue() + ": " + entry.getKey() + "\n"));
     }
     
 }
