@@ -2,6 +2,23 @@
 
 A Java-based linter for Markdown Architectural Decision Records (MADR).
 Learn more about MADR [here](https://www.ozimmer.ch/practices/2022/11/22/MADRTemplatePrimer.html).
+
+## Run with JBang
+
+With [JBang](https://www.jbang.dev/) installed (requires JRE 21 or newer), the
+linter can be run directly from this repository without cloning:
+
+```
+jbang madrlint@adr/madrlint <madrFile>
+```
+
+Or install it as a local command:
+
+```
+jbang app install madrlint@adr/madrlint
+madrlint <madrFile>
+```
+
 ## How-to-test
 
 1. Build and grab dependencies with: `.\gradlew build`

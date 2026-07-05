@@ -1,0 +1,44 @@
+name: JBang
+
+# Verifies that the JBang launcher (madrlint.java) still compiles every
+# enumerated //SOURCES file and resolves its //DEPS, so that
+# `jbang madrlint@adr/madrlint` keeps working. This guards against the
+# //SOURCES list drifting out of sync with the source tree (e.g. when rule
+# files are added, removed or renamed).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  jbang:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up JBang
+        uses: jbangdev/setup-jbang@v0.1.1
+
+      - name: Build launcher
+        run: jbang build madrlint.java
+
+      - name: Smoke test (--help)
+        run: jbang madrlint.java --help
+
+      - name: Smoke test (lint a sample MADR file)
+        run: jbang madrlint.java madr-samples/0011-use-asterisk-as-list-marker.md
