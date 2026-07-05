@@ -1,0 +1,13 @@
+{
+  "config": {
+    // Long lines are fine
+    "MD013": false,
+    "MD060": { "style": "aligned" }
+  },
+  "globs": ["**/*.md"],
+  "ignores": [
+    // Sample MADRs intentionally violate Markdown conventions
+    "madr-samples/**",
+    "**/build/**"
+  ]
+}
