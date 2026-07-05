@@ -41,7 +41,7 @@ import picocli.CommandLine.Parameters;
     name = "madrlint",
     description = "Lint MADR files",
     mixinStandardHelpOptions = true,
-    customSynopsis = "madrlint [-hOqV] [-n <ruleNumber>[,ruleNumber...]>] [-o <outputFile>] [--output-format <format>] <madrFile>",
+    customSynopsis = "madrlint [-hOqV] [-n <rule>[,rule...]] [-o <outputFile>] [--output-format <format>] <madrFile>",
     version="1.0.0"
 )
 public class Main implements Runnable {
@@ -58,7 +58,7 @@ public class Main implements Runnable {
     private boolean override;
     @Option(names = {"-q", "--quiet"}, description = "Information not relevant to the lint results will be suppressed.")
     boolean quietMode;
-    @Option(names = {"-n", "--no-warn"}, description = "Disable warnings for certain rules. They can either be declared separately(e.g -n1 -n2) or chained together separated by comma(e.g -n1,2)", split = ",")
+    @Option(names = {"-n", "--no-warn"}, description = "Disable warnings for certain rules, given as rule number or rule ID (e.g -n1 or -nMADR01). They can either be declared separately(e.g -n1 -n2) or chained together separated by comma(e.g -n1,2)", split = ",", converter = RuleIdConverter.class)
     private Set<Integer> disabledRules = new HashSet<>();
     @Option(names = {"--output-format"}, description = "Format of the diagnostics. Valid values: errorformat, github-actions. Defaults to errorformat.", converter = OutputFormatConverter.class)
     private OutputFormat outputFormat = OutputFormat.ERRORFORMAT;
@@ -133,6 +133,19 @@ public class Main implements Runnable {
         }
         int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
+    }
+
+    static class RuleIdConverter implements CommandLine.ITypeConverter<Integer> {
+        @Override
+        public Integer convert(String value) {
+            String number = value.toUpperCase().startsWith("MADR") ? value.substring(4) : value;
+            try {
+                return Integer.parseInt(number);
+            }
+            catch (NumberFormatException e){
+                throw new CommandLine.TypeConversionException("Invalid rule '" + value + "'. Expected a rule number (e.g. 1) or a rule ID (e.g. MADR01).");
+            }
+        }
     }
 
     static class OutputFormatConverter implements CommandLine.ITypeConverter<OutputFormat> {
