@@ -13,6 +13,7 @@ import neutra1.linter.core.ASTTraverser;
 import neutra1.linter.core.Reporter;
 import neutra1.linter.helper.IgnoreFileHandler;
 import neutra1.linter.helper.LintContext;
+import neutra1.linter.models.enums.OutputFormat;
 import neutra1.linter.rules.AbstractRule;
 import neutra1.linter.rules.IFileRule;
 import neutra1.linter.rules.impl.file.Rule01;
@@ -40,7 +41,7 @@ import picocli.CommandLine.Parameters;
     name = "madrlint",
     description = "Lint MADR files",
     mixinStandardHelpOptions = true,
-    customSynopsis = "madrlint [-hOqV] [-n <ruleNumber>[,ruleNumber...]>] [-o <outputFile>] <madrFile>",
+    customSynopsis = "madrlint [-hOqV] [-n <ruleNumber>[,ruleNumber...]>] [-o <outputFile>] [--output-format <format>] <madrFile>",
     version="1.0.0"
 )
 public class Main implements Runnable {
@@ -59,6 +60,8 @@ public class Main implements Runnable {
     boolean quietMode;
     @Option(names = {"-n", "--no-warn"}, description = "Disable warnings for certain rules. They can either be declared separately(e.g -n1 -n2) or chained together separated by comma(e.g -n1,2)", split = ",")
     private Set<Integer> disabledRules = new HashSet<>();
+    @Option(names = {"--output-format"}, description = "Format of the diagnostics. Valid values: errorformat, github-actions. Defaults to errorformat.", converter = OutputFormatConverter.class)
+    private OutputFormat outputFormat = OutputFormat.ERRORFORMAT;
     @Option(names = {"-r", "--root"}, description = "Set the root directory of the project. Defaults to current working directory if not specified.")
     private String root;
     @Override
@@ -116,11 +119,11 @@ public class Main implements Runnable {
         int disabledRuleCount = disabledRules.size();
         int totalRuleCount = rules.size();
         int disabledRelevantRuleCount = rules.stream().filter(rule -> disabledRules.contains(rule.getRuleNumber())).toList().size();
-        if (outputFile == null){  
-            reporter.outputDiagnostics(disabledRuleCount, disabledRelevantRuleCount, totalRuleCount, quietMode);
-        } 
+        if (outputFile == null){
+            reporter.outputDiagnostics(disabledRuleCount, disabledRelevantRuleCount, totalRuleCount, quietMode, outputFormat);
+        }
         else {
-            reporter.outputDiagnostics(outputFile, disabledRuleCount, disabledRelevantRuleCount, totalRuleCount, override, quietMode);
+            reporter.outputDiagnostics(outputFile, disabledRuleCount, disabledRelevantRuleCount, totalRuleCount, override, quietMode, outputFormat);
         }
     }
 
@@ -130,6 +133,18 @@ public class Main implements Runnable {
         }
         int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
+    }
+
+    static class OutputFormatConverter implements CommandLine.ITypeConverter<OutputFormat> {
+        @Override
+        public OutputFormat convert(String value) {
+            try {
+                return OutputFormat.fromLabel(value);
+            }
+            catch (IllegalArgumentException e){
+                throw new CommandLine.TypeConversionException(e.getMessage());
+            }
+        }
     }
 
     private String readFile(String filePath) throws IOException{
