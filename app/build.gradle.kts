@@ -23,19 +23,19 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     // Picocli for CLI dev
     implementation("info.picocli:picocli:4.7.7")
-    annotationProcessor("info.picocli:picocli-codegen:4.7.5")
+    annotationProcessor("info.picocli:picocli-codegen:4.7.7")
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.38")
-    annotationProcessor("org.projectlombok:lombok:1.18.38")
-    testCompileOnly("org.projectlombok:lombok:1.18.38")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.38")
+    compileOnly("org.projectlombok:lombok:1.18.46")
+    annotationProcessor("org.projectlombok:lombok:1.18.46")
+    testCompileOnly("org.projectlombok:lombok:1.18.46")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.46")
     // Flexmark-Java for md parsing, core or extensions
     implementation("com.vladsch.flexmark:flexmark-ext-autolink:0.64.8")
     implementation("com.vladsch.flexmark:flexmark:0.64.8")
     implementation("com.vladsch.flexmark:flexmark-ext-yaml-front-matter:0.64.8")
     //YAML linter
     implementation("com.github.sbaudoin:yamllint:1.6.1")
-    implementation("com.google.code.gson:gson:2.13.2")
+    implementation("com.google.code.gson:gson:2.14.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
