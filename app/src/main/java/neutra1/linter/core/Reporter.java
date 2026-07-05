@@ -3,6 +3,7 @@ package neutra1.linter.core;
 import java.util.List;
 
 import neutra1.linter.helper.LintContext;
+import neutra1.linter.models.enums.OutputFormat;
 import neutra1.linter.models.records.Violation;
 
 import java.io.IOException;
@@ -33,16 +34,16 @@ public class Reporter {
         violationList.add(violation);
     }
 
-    public void outputDiagnostics(int disabledRuleCount, int disabledRelevantRuleCount, int totalRuleCount, boolean quietMode) {
-        StringBuilder diagnosis = getDiagnosis();
+    public void outputDiagnostics(int disabledRuleCount, int disabledRelevantRuleCount, int totalRuleCount, boolean quietMode, OutputFormat outputFormat) {
+        StringBuilder diagnosis = getDiagnosis(outputFormat);
         System.out.println(diagnosis.toString());
         if (!quietMode){
             printInformation(totalRuleCount, disabledRelevantRuleCount, disabledRuleCount);
         }
     }
 
-    public void outputDiagnostics(String outputFile, int disabledRuleCount, int disabledRelevantRuleCount, int totalRuleCount, boolean override, boolean quietMode){
-        StringBuilder diagnosis = getDiagnosis();
+    public void outputDiagnostics(String outputFile, int disabledRuleCount, int disabledRelevantRuleCount, int totalRuleCount, boolean override, boolean quietMode, OutputFormat outputFormat){
+        StringBuilder diagnosis = getDiagnosis(outputFormat);
         Path currentDir = Paths.get(System.getProperty("user.dir"));
         Path outputPath = Paths.get(outputFile);
         if (!outputPath.isAbsolute()){
@@ -60,25 +61,37 @@ public class Reporter {
             System.out.println("WARNING: writing to " + outputPath.toString() + " not successful." + "\n" +
                                 "Output defaults to stdout. You can add flag \"--override\" to overwrite it.\n" + 
                                 "If this message still shows up after adding that flag, check path validity and/or write access.\n");
-            outputDiagnostics(disabledRuleCount, disabledRelevantRuleCount, totalRuleCount, quietMode);
+            outputDiagnostics(disabledRuleCount, disabledRelevantRuleCount, totalRuleCount, quietMode, outputFormat);
         }
         if (!quietMode){
             printInformation(totalRuleCount, disabledRelevantRuleCount, disabledRuleCount);
         }
     }
 
-    private StringBuilder getDiagnosis() {
+    private StringBuilder getDiagnosis(OutputFormat outputFormat) {
         StringBuilder diagnosis = new StringBuilder();
         violationList.sort(Comparator.comparingInt(Violation::lineNumber));
         for (Violation v : violationList) {
-            if (v.representativeMadr().isEmpty()){
-                diagnosis.append(LintContext.USER_PATH + ":" + v.lineNumber() + " " + "[" + v.ruleId() + "]" + " " + v.description() + "\n");
+            String file = v.representativeMadr().orElse(LintContext.USER_PATH);
+            if (outputFormat == OutputFormat.GITHUB_ACTIONS){
+                diagnosis.append("::error file=" + escapeGithubProperty(file) + ",line=" + v.lineNumber() +
+                                 ",title=" + escapeGithubProperty(v.ruleId()) + "::" + escapeGithubData(v.description()) + "\n");
             }
             else {
-                diagnosis.append(v.representativeMadr().get() + ":" + v.lineNumber() + " " + "[" + v.ruleId() + "]" + " " + v.description() + "\n");
+                diagnosis.append(file + ":" + v.lineNumber() + " " + "[" + v.ruleId() + "]" + " " + v.description() + "\n");
             }
         }
         return diagnosis;
+    }
+
+    // Escaping mandated by GitHub Actions workflow commands, see
+    // https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-commands
+    private String escapeGithubData(String value){
+        return value.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A");
+    }
+
+    private String escapeGithubProperty(String value){
+        return escapeGithubData(value).replace(":", "%3A").replace(",", "%2C");
     }
 
     private void printInformation(int totalRuleCount, int disabledRelevantRuleCount, int disabledRuleCount){

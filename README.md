@@ -41,6 +41,8 @@ madrlint <madrFile>
                                not exist, it will be created.
 -O, --override                 If the given output file already exists, it will be
                                overwritten.
+--output-format <format>       Format of the diagnostics. Valid values: errorformat,
+                               github-actions. Defaults to errorformat.
 -q, --quiet                    Information not relevant to the lint results will be
                                suppressed.
 ```

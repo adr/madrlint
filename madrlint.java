@@ -10,6 +10,7 @@
 //SOURCES app/src/main/java/neutra1/linter/models/enums/LinkType.java
 //SOURCES app/src/main/java/neutra1/linter/models/enums/MandatorySection.java
 //SOURCES app/src/main/java/neutra1/linter/models/enums/OptionalSection.java
+//SOURCES app/src/main/java/neutra1/linter/models/enums/OutputFormat.java
 //SOURCES app/src/main/java/neutra1/linter/models/enums/ResourceType.java
 //SOURCES app/src/main/java/neutra1/linter/models/records/BulletListItemInfo.java
 //SOURCES app/src/main/java/neutra1/linter/models/records/HeadingInfo.java
