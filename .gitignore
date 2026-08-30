@@ -34,3 +34,4 @@ app/bin/
 # Misc
 build
 *.exe
+target/

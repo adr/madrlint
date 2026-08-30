@@ -48,6 +48,7 @@ java {
 application {
     // Define the main class for the application.
     mainClass.set("neutra1.linter.Main")
+    applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
 graalvmNative{

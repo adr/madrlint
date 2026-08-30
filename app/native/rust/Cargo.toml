@@ -1,0 +1,8 @@
+[package]
+name = "madr_native"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "lychee"
+crate-type = ["cdylib"]
