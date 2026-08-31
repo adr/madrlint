@@ -134,7 +134,7 @@ public class Main implements Runnable {
         // }
         // int exitCode = new CommandLine(new Main()).execute(args);
         // System.exit(exitCode);
-        LycheeWrapper.hello();
+        System.out.println(LycheeWrapper.checkLink("https://github.com/adr/madrlint"));
     }
 
     static class RuleIdConverter implements CommandLine.ITypeConverter<Integer> {
