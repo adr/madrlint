@@ -96,3 +96,7 @@ To disable a rule, pass its ID or number to `-n`/`--no-warn` (e.g., `-n MADR01` 
 | `MADR44` | MADRs must follow the naming scheme `NNNN-brief-description.md`.                                                         |
 
 The rules are based on the [MADR template](https://github.com/adr/madr/blob/develop/template/adr-template.md).
+
+## Related Work
+
+- [delivery-gates](https://github.com/chohan-sarmad-ali/delivery-gates)
