@@ -11,7 +11,6 @@ import java.util.Set;
 
 import neutra1.linter.core.ASTTraverser;
 import neutra1.linter.core.Reporter;
-import neutra1.linter.ffi.LycheeWrapper;
 import neutra1.linter.helper.IgnoreFileHandler;
 import neutra1.linter.helper.LintContext;
 import neutra1.linter.models.enums.OutputFormat;
@@ -129,12 +128,12 @@ public class Main implements Runnable {
     }
 
     public static void main(String[] args) {
-        // if (args.length == 0) {
-        //     args = new String[] {"-h"};
-        // }
-        // int exitCode = new CommandLine(new Main()).execute(args);
-        // System.exit(exitCode);
-        System.out.println(LycheeWrapper.checkLink("https://github.com/adr/madrlint"));
+        if (args.length == 0) {
+            args = new String[] {"-h"};
+        }
+        int exitCode = new CommandLine(new Main()).execute(args);
+        System.exit(exitCode);
+        
     }
 
     static class RuleIdConverter implements CommandLine.ITypeConverter<Integer> {
