@@ -36,10 +36,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up GraalVM (JDK 21)
+      # 1. Set up the stable Rust compiler toolchain
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      # 2. Build the Rust dynamic library first
+      - name: Build Rust dynamic library
+        run: cargo build --release
+        working-directory: app/native/rust
+
+      - name: Set up GraalVM (JDK 25)
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: "21"
+          java-version: "25"
           distribution: graalvm
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -49,15 +58,38 @@ jobs:
         # so disable the cache for this invocation only. The JVM build still uses it.
         run: ./gradlew nativeCompile --no-configuration-cache --stacktrace
 
-      - name: Stage binary
+      # 4. Stage both the executable and the DLL, and compress them into a unified archive
+      - name: Stage and Package binary
         shell: bash
         run: |
           mkdir -p dist
           src="app/build/native/nativeCompile"
+          pkg_dir="madrlint-${{ matrix.label }}"
+          mkdir -p "$pkg_dir"
+          
+          # Copy the compiled executable into the package directory
           if [ -f "$src/madrlint.exe" ]; then
-            cp "$src/madrlint.exe" "dist/madrlint-${{ matrix.label }}.exe"
+            cp "$src/madrlint.exe" "$pkg_dir/madrlint.exe"
           else
-            cp "$src/madrlint" "dist/madrlint-${{ matrix.label }}"
+            cp "$src/madrlint" "$pkg_dir/madrlint"
+          fi
+
+          # Copy the corresponding dynamic library into the package directory
+          if [ -f "$src/lychee.dll" ]; then
+            cp "$src/lychee.dll" "$pkg_dir/lychee.dll"
+          elif [ -f "$src/liblychee.dylib" ]; then
+            cp "$src/liblychee.dylib" "$pkg_dir/liblychee.dylib"
+          elif [ -f "$src/liblychee.so" ]; then
+            cp "$src/liblychee.so" "$pkg_dir/liblychee.so"
+          fi
+
+          # Compress the folder per OS platform
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            # Windows: Compress to .zip
+            powershell -Command "Compress-Archive -Path '$pkg_dir\*' -DestinationPath 'dist/madrlint-${{ matrix.label }}.zip' -Force"
+          else
+            # Linux / macOS: Compress to .tar.gz
+            tar -czf "dist/madrlint-${{ matrix.label }}.tar.gz" -C "$pkg_dir" .
           fi
 
       - name: Upload binary artifact
