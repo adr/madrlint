@@ -1,6 +1,6 @@
 # madr-linter
 
-A Java-based linter for Markdown Architectural Decision Records (MADR). Requires [JDK 25](https://adoptium.net/temurin/releases?version=25&os=any&arch=any). 
+A Java-based linter for Markdown Architectural Decision Records (MADR). Requires [JDK 25](https://adoptium.net/temurin/releases?version=25&os=any&arch=any).
 Learn more about MADR in the [MADR template primer](https://www.ozimmer.ch/practices/2022/11/22/MADRTemplatePrimer.html).
 
 ## Run with JBang

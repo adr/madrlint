@@ -41,6 +41,7 @@
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule12.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule21.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule31.java
+//SOURCES app/src/main/java/neutra1/linter/ffi/LycheeWrapper.java
 //DEPS info.picocli:picocli:4.7.7
 //DEPS org.projectlombok:lombok:1.18.38
 //DEPS com.vladsch.flexmark:flexmark:0.64.8
