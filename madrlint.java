@@ -1,5 +1,5 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 21+
+//JAVA 25+
 //SOURCES app/src/main/java/neutra1/linter/Main.java
 //SOURCES app/src/main/java/neutra1/linter/core/ASTTraverser.java
 //SOURCES app/src/main/java/neutra1/linter/core/HtmlCommentRemoverExtension.java
