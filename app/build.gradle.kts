@@ -9,7 +9,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
    application
    id("com.gradleup.shadow") version ("9.3.1")
-   id("org.graalvm.buildtools.native") version ("0.10.1")
+   id("org.graalvm.buildtools.native") version "1.1.11"
 }
 
 repositories {
@@ -54,7 +54,7 @@ application {
 graalvmNative{
     binaries {
         named("main") {
-            buildArgs("--enable-http", "--enable-https")
+            buildArgs("--enable-http", "--enable-https", "--enable-native-access=ALL-UNNAMED")
             imageName.set("madrlint")
         }
     }
