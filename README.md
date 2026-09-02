@@ -1,4 +1,4 @@
-# madr-linter
+# madrlint
 
 A Java-based linter for Markdown Architectural Decision Records (MADR).
 Learn more about MADR in the [MADR template primer](https://www.ozimmer.ch/practices/2022/11/22/MADRTemplatePrimer.html).
