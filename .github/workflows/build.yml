@@ -30,6 +30,15 @@ jobs:
             cd rust
           fi
           cargo build --release
+          
+      - name: Upload compiled binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: liblychee-linux
+          path: |
+            app/native/rust/target/release/liblychee.so
+            rust/target/release/liblychee.so
+          if-no-files-found: error
 
       - name: Set up JDK 25
         uses: actions/setup-java@v5

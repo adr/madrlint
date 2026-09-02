@@ -28,10 +28,13 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-x64
+            binary_path: app/native/rust/target/release/liblychee.so
           - os: macos-latest
             label: macos-arm64
+            binary_path: app/native/rust/target/release/liblychee.dylib
           - os: windows-latest
             label: windows-x64
+            binary_path: app/native/rust/target/release/lychee.dll
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -74,16 +77,8 @@ jobs:
             cp "$src/madrlint" "$pkg_dir/madrlint"
           fi
 
-          # Copy the corresponding dynamic library into the package directory
-          if [ -f "$src/lychee.dll" ]; then
-            cp "$src/lychee.dll" "$pkg_dir/lychee.dll"
-          elif [ -f "$src/liblychee.dylib" ]; then
-            cp "$src/liblychee.dylib" "$pkg_dir/liblychee.dylib"
-          elif [ -f "$src/liblychee.so" ]; then
-            cp "$src/liblychee.so" "$pkg_dir/liblychee.so"
-          fi
+          cp "${{ matrix.binary_path }}" "$pkg_dir/"
 
-          # Compress the folder per OS platform
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             # Windows: Compress to .zip
             powershell -Command "Compress-Archive -Path '$pkg_dir\*' -DestinationPath 'dist/madrlint-${{ matrix.label }}.zip' -Force"
@@ -104,3 +99,60 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
+
+  release-jar:
+    name: Package JBang JAR
+    needs: native
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Download Linux binary
+        uses: actions/download-artifact@v7
+        with:
+          name: madrlint-linux-x64
+          path: temp-linux
+
+      - name: Download macOS binary
+        uses: actions/download-artifact@v7
+        with:
+          name: madrlint-macos-arm64
+          path: temp-macos
+
+      - name: Download Windows binary
+        uses: actions/download-artifact@v7
+        with:
+          name: madrlint-windows-x64
+          path: temp-windows
+
+      - name: Stage native libraries in resources
+        shell: bash
+        run: |
+          mkdir -p app/src/main/resources/natives/linux-x86_64
+          mkdir -p app/src/main/resources/natives/windows-x86_64
+          mkdir -p app/src/main/resources/natives/macos-aarch64
+          mkdir -p app/src/main/resources/natives/macos-x86_64
+
+          find temp-linux -name "liblychee.so" -exec cp {} app/src/main/resources/natives/linux-x86_64/ \;
+          find temp-windows -name "lychee.dll" -exec cp {} app/src/main/resources/natives/windows-x86_64/ \;
+          find temp-macos -name "liblychee.dylib" -exec cp {} app/src/main/resources/natives/macos-aarch64/ \;
+          find temp-macos -name "liblychee.dylib" -exec cp {} app/src/main/resources/natives/macos-x86_64/ \;
+
+      - name: Build production JAR
+        run: ./gradlew jar
+
+      - name: Attach JAR to Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: app/build/libs/*.jar       

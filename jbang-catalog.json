@@ -1,7 +1,7 @@
 {
   "aliases": {
     "madrlint": {
-      "script-ref": "madrlint.java",
+      "script-ref": "https://github.com/adr/madrlint/releases/latest/download/madrlint.jar",
       "description": "Lint Markdown Architectural Decision Record (MADR) files."
     }
   }
