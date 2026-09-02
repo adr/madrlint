@@ -1,4 +1,5 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
+//JAVA_OPTIONS --enable-native-access=ALL-UNNAMED
 //JAVA 25+
 //SOURCES app/src/main/java/neutra1/linter/Main.java
 //SOURCES app/src/main/java/neutra1/linter/core/ASTTraverser.java
