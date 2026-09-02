@@ -5,10 +5,13 @@ import java.lang.foreign.Linker;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.FunctionDescriptor;
 import java.lang.foreign.ValueLayout;
+import java.io.InputStream;
 import java.lang.foreign.Arena;
 import java.lang.invoke.MethodHandle;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +50,24 @@ public class LycheeWrapper {
 
     private static Path resolveLibraryPath() {
         String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
-        String libName = os.contains("win") ? "lychee.dll" : (os.contains("mac") ? "liblychee.dylib" : "liblychee.so");
+        String arch = System.getProperty("os.arch").toLowerCase(Locale.ROOT);
+        String osName = os.contains("win") ? "windows" : (os.contains("mac") ? "macos" : "linux");
+        String libExtension = os.contains("win") ? ".dll" : (os.contains("mac") ? ".dylib" : ".so");
+        String libName = (osName.equals("windows") ? "" : "lib") + "lychee" + libExtension;
+        String archName = (arch.contains("amd64") || arch.contains("x86_64")) ? "x86_64" : 
+                          ((arch.contains("aarch64") || arch.contains("arm64")) ? "aarch64" : arch);
+
+        String resourcePath = "/natives/" + osName + "-" + archName + "/" + libName;
+        try (InputStream is = LycheeWrapper.class.getResourceAsStream(resourcePath)) {
+            if (is != null) {
+                Path tempDir = Files.createTempDirectory("madrlint-natives-");
+                Path tempLib = tempDir.resolve(libName);
+                tempLib.toFile().deleteOnExit();
+                tempDir.toFile().deleteOnExit();
+                Files.copy(is, tempLib, StandardCopyOption.REPLACE_EXISTING);
+                return tempLib;
+            }
+        } catch (Exception ignored) {}
 
         String exePathStr = ProcessHandle.current().info().command().orElse(null);
         if (exePathStr != null 
@@ -64,7 +84,7 @@ public class LycheeWrapper {
         }
 
         try {
-            java.net.URI location = LycheeWrapper.class.getProtectionDomain().getCodeSource().getLocation().toURI();
+            URI location = LycheeWrapper.class.getProtectionDomain().getCodeSource().getLocation().toURI();
             Path classPath = Path.of(location);
             Path exeDir = Files.isDirectory(classPath) ? classPath : classPath.getParent();
             if (exeDir != null) {
