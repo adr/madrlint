@@ -25,7 +25,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up JDK 21
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build Rust library
+        run: |
+          if [ -d "app/native/rust" ]; then
+            cd app/native/rust
+          elif [ -d "rust" ]; then
+            cd rust
+          fi
+          cargo build --release
+
+      - name: Set up JDK 25
         uses: actions/setup-java@v5
         with:
           distribution: temurin
