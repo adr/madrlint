@@ -1,0 +1,254 @@
+{
+  "reflection": [
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Anchors"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Braces"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Brackets"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Colons"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Commas"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Comments"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.CommentsIndentation"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.DocumentEnd"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.DocumentStart"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.EmptyLines"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.EmptyValues"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.FloatValues"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Hyphens"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Indentation"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.KeyDuplicates"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.KeyOrdering"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.LineLength"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.NewLineAtEndOfFile"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.NewLines"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.OctalValues"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.QuotedStrings"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.TrailingSpaces"
+    },
+    {
+      "type": "com.github.sbaudoin.yamllint.rules.Truthy"
+    },
+    {
+      "type": "com.vladsch.flexmark.util.ast.TextContainer$Flags"
+    },
+    {
+      "type": "com.vladsch.flexmark.util.sequence.BasedOptionsHolder$Options"
+    },
+    {
+      "type": "com.vladsch.flexmark.util.sequence.LineAppendable$Options"
+    },
+    {
+      "type": "com.vladsch.flexmark.util.sequence.builder.ISegmentBuilder$Options"
+    },
+    {
+      "type": "groovy.lang.Closure"
+    },
+    {
+      "type": "java.lang.Boolean",
+      "jniAccessible": true,
+      "methods": [
+        {
+          "name": "getBoolean",
+          "parameterTypes": [
+            "java.lang.String"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "java.lang.Object"
+    },
+    {
+      "type": "java.nio.file.Path"
+    },
+    {
+      "type": "java.nio.file.Paths"
+    },
+    {
+      "type": "java.sql.Connection"
+    },
+    {
+      "type": "java.sql.Date"
+    },
+    {
+      "type": "java.sql.Driver"
+    },
+    {
+      "type": "java.sql.DriverManager"
+    },
+    {
+      "type": "java.sql.Time"
+    },
+    {
+      "type": "java.sql.Timestamp"
+    },
+    {
+      "type": "java.time.Duration"
+    },
+    {
+      "type": "java.time.Instant"
+    },
+    {
+      "type": "java.time.LocalDate"
+    },
+    {
+      "type": "java.time.LocalDateTime"
+    },
+    {
+      "type": "java.time.LocalTime"
+    },
+    {
+      "type": "java.time.MonthDay"
+    },
+    {
+      "type": "java.time.OffsetDateTime"
+    },
+    {
+      "type": "java.time.OffsetTime"
+    },
+    {
+      "type": "java.time.Period"
+    },
+    {
+      "type": "java.time.Year"
+    },
+    {
+      "type": "java.time.YearMonth"
+    },
+    {
+      "type": "java.time.ZoneId"
+    },
+    {
+      "type": "java.time.ZoneOffset"
+    },
+    {
+      "type": "java.time.ZonedDateTime"
+    },
+    {
+      "type": "neutra1.linter.Main",
+      "fields": [
+        {
+          "name": "disabledRules"
+        },
+        {
+          "name": "outputFile"
+        },
+        {
+          "name": "outputFormat"
+        },
+        {
+          "name": "override"
+        },
+        {
+          "name": "quietMode"
+        },
+        {
+          "name": "root"
+        },
+        {
+          "name": "userPath"
+        }
+      ]
+    },
+    {
+      "type": "neutra1.linter.Main$OutputFormatConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "neutra1.linter.Main$RuleIdConverter",
+      "methods": [
+        {
+          "name": "<init>",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "org.yaml.snakeyaml.tokens.ScalarToken",
+      "methods": [
+        {
+          "name": "getValue",
+          "parameterTypes": []
+        }
+      ]
+    },
+    {
+      "type": "picocli.CommandLine$AutoHelpMixin",
+      "fields": [
+        {
+          "name": "helpRequested"
+        },
+        {
+          "name": "versionRequested"
+        }
+      ]
+    }
+  ],
+  "resources": [
+    {
+      "glob": "META-INF/services/com.github.sbaudoin.yamllint.rules.Rule"
+    }
+  ],
+  "foreign": {
+    "downcalls": [
+      {
+        "returnType": "void*",
+        "parameterTypes": [
+          "void*"
+        ]
+      },
+      {
+        "returnType": "void",
+        "parameterTypes": [
+          "void*"
+        ]
+      }
+    ]
+  }
+}

@@ -42,7 +42,7 @@ import picocli.CommandLine.Parameters;
     description = "Lint MADR files",
     mixinStandardHelpOptions = true,
     customSynopsis = "madrlint [-hOqV] [-n <rule>[,rule...]] [-o <outputFile>] [--output-format <format>] <madrFile>",
-    version="1.0.0"
+    version="1.1.0"
 )
 public class Main implements Runnable {
 
@@ -133,6 +133,7 @@ public class Main implements Runnable {
         }
         int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
+        
     }
 
     static class RuleIdConverter implements CommandLine.ITypeConverter<Integer> {

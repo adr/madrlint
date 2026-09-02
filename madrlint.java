@@ -1,5 +1,6 @@
 ///usr/bin/env jbang "$0" "$@" ; exit $?
-//JAVA 21+
+//JAVA_OPTIONS --enable-native-access=ALL-UNNAMED
+//JAVA 25+
 //SOURCES app/src/main/java/neutra1/linter/Main.java
 //SOURCES app/src/main/java/neutra1/linter/core/ASTTraverser.java
 //SOURCES app/src/main/java/neutra1/linter/core/HtmlCommentRemoverExtension.java
@@ -41,6 +42,7 @@
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule12.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule21.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule31.java
+//SOURCES app/src/main/java/neutra1/linter/ffi/LycheeWrapper.java
 //DEPS info.picocli:picocli:4.7.7
 //DEPS org.projectlombok:lombok:1.18.38
 //DEPS com.vladsch.flexmark:flexmark:0.64.8

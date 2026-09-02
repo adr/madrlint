@@ -28,18 +28,30 @@ jobs:
         include:
           - os: ubuntu-latest
             label: linux-x64
+            binary_path: app/native/rust/target/release/liblychee.so
           - os: macos-latest
             label: macos-arm64
+            binary_path: app/native/rust/target/release/liblychee.dylib
           - os: windows-latest
             label: windows-x64
+            binary_path: app/native/rust/target/release/lychee.dll
     steps:
       - name: Checkout
         uses: actions/checkout@v7
 
-      - name: Set up GraalVM (JDK 21)
+      # 1. Set up the stable Rust compiler toolchain
+      - name: Set up Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      # 2. Build the Rust dynamic library first
+      - name: Build Rust dynamic library
+        run: cargo build --release
+        working-directory: app/native/rust
+
+      - name: Set up GraalVM (JDK 25)
         uses: graalvm/setup-graalvm@v1
         with:
-          java-version: "21"
+          java-version: "25"
           distribution: graalvm
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -49,15 +61,30 @@ jobs:
         # so disable the cache for this invocation only. The JVM build still uses it.
         run: ./gradlew nativeCompile --no-configuration-cache --stacktrace
 
-      - name: Stage binary
+      # 4. Stage both the executable and the DLL, and compress them into a unified archive
+      - name: Stage and Package binary
         shell: bash
         run: |
           mkdir -p dist
           src="app/build/native/nativeCompile"
+          pkg_dir="madrlint-${{ matrix.label }}"
+          mkdir -p "$pkg_dir"
+          
+          # Copy the compiled executable into the package directory
           if [ -f "$src/madrlint.exe" ]; then
-            cp "$src/madrlint.exe" "dist/madrlint-${{ matrix.label }}.exe"
+            cp "$src/madrlint.exe" "$pkg_dir/madrlint.exe"
           else
-            cp "$src/madrlint" "dist/madrlint-${{ matrix.label }}"
+            cp "$src/madrlint" "$pkg_dir/madrlint"
+          fi
+
+          cp "${{ matrix.binary_path }}" "$pkg_dir/"
+
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            # Windows: Compress to .zip
+            powershell -Command "Compress-Archive -Path '$pkg_dir\*' -DestinationPath 'dist/madrlint-${{ matrix.label }}.zip' -Force"
+          else
+            # Linux / macOS: Compress to .tar.gz
+            tar -czf "dist/madrlint-${{ matrix.label }}.tar.gz" -C "$pkg_dir" .
           fi
 
       - name: Upload binary artifact
@@ -72,3 +99,60 @@ jobs:
         uses: softprops/action-gh-release@v3
         with:
           files: dist/*
+
+  release-jar:
+    name: Package JBang JAR
+    needs: native
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: "25"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Download Linux binary
+        uses: actions/download-artifact@v7
+        with:
+          name: madrlint-linux-x64
+          path: temp-linux
+
+      - name: Download macOS binary
+        uses: actions/download-artifact@v7
+        with:
+          name: madrlint-macos-arm64
+          path: temp-macos
+
+      - name: Download Windows binary
+        uses: actions/download-artifact@v7
+        with:
+          name: madrlint-windows-x64
+          path: temp-windows
+
+      - name: Stage native libraries in resources
+        shell: bash
+        run: |
+          mkdir -p app/src/main/resources/natives/linux-x86_64
+          mkdir -p app/src/main/resources/natives/windows-x86_64
+          mkdir -p app/src/main/resources/natives/macos-aarch64
+          mkdir -p app/src/main/resources/natives/macos-x86_64
+
+          find temp-linux -name "liblychee.so" -exec cp {} app/src/main/resources/natives/linux-x86_64/ \;
+          find temp-windows -name "lychee.dll" -exec cp {} app/src/main/resources/natives/windows-x86_64/ \;
+          find temp-macos -name "liblychee.dylib" -exec cp {} app/src/main/resources/natives/macos-aarch64/ \;
+          find temp-macos -name "liblychee.dylib" -exec cp {} app/src/main/resources/natives/macos-x86_64/ \;
+
+      - name: Build production JAR
+        run: ./gradlew jar
+
+      - name: Attach JAR to Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: app/build/libs/*.jar       

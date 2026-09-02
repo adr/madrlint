@@ -9,7 +9,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
    application
    id("com.gradleup.shadow") version ("9.3.1")
-   id("org.graalvm.buildtools.native") version ("0.10.1")
+   id("org.graalvm.buildtools.native") version "1.1.11"
 }
 
 repositories {
@@ -35,25 +35,25 @@ dependencies {
     implementation("com.vladsch.flexmark:flexmark-ext-yaml-front-matter:0.64.8")
     //YAML linter
     implementation("com.github.sbaudoin:yamllint:1.6.1")
-    implementation("com.google.code.gson:gson:2.14.0")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 application {
     // Define the main class for the application.
     mainClass.set("neutra1.linter.Main")
+    applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
 }
 
 graalvmNative{
     binaries {
         named("main") {
-            buildArgs("--enable-http", "--enable-https")
+            buildArgs("--enable-http", "--enable-https", "--enable-native-access=ALL-UNNAMED")
             imageName.set("madrlint")
         }
     }
