@@ -1,11 +1,11 @@
 # madrlint
 
-A Java-based linter for Markdown Architectural Decision Records (MADR). Requires [JDK 25](https://adoptium.net/temurin/releases?version=25&os=any&arch=any).
+A Java-based linter for Markdown Architectural Decision Records (MADR).
 Learn more about MADR in the [MADR template primer](https://www.ozimmer.ch/practices/2022/11/22/MADRTemplatePrimer.html).
 
 ## Run with JBang
 
-With [JBang](https://www.jbang.dev/) installed (requires JRE 21 or newer), the
+With [JBang](https://www.jbang.dev/) installed (requires JRE 25 or newer), the
 linter can be run directly from this repository without cloning:
 
 ```shell
@@ -19,16 +19,25 @@ jbang app install madrlint@adr/madrlint
 madrlint <madrFile>
 ```
 
+## Installation
+
+Installing the tool as a native executable is highly recommended.
+
+Head over to Release, download either the tarball or the `.zip` file depending on your operating system. Extract it to a directory and add it to your system PATH.
+
 ## How-to-test
 
-1. Build and grab dependencies with: `.\gradlew build`
-2. Test the tool with: `.\gradlew run --args="[Options] <madrFile>"`
+Working with this repository locally requires Java SDK 25 or newer and Rust to be installed on your system.
+
+1. Build and grab dependencies on the Rust side with `cargo build --release` inside `app\native\rust`
+2. Build and grab dependencies on the Java side with: `.\gradlew build`
+3. Test the tool with: `.\gradlew run --args="[Options] <madrFile/directory>"`
 
 ### Arguments
 
 ```text
-<madrFile>                     Path to the Markdown Architectural Decision Record
-                               (MADR) file to lint.
+<madrFile/directory>           Path to the Markdown Architectural Decision Record
+                               (MADR) file or record directory to lint.
 ```
 
 ### Options
@@ -48,12 +57,16 @@ madrlint <madrFile>
                                github-actions. Defaults to errorformat.
 -q, --quiet                    Information not relevant to the lint results will be
                                suppressed.
+-r, --root                     Sets root directory of the project. Defaults to current working directory
+                               if left unspecified. Relevant for root relative resources validity check.
 ```
 
 ## Rules
 
 Violations are reported with a rule ID such as `MADR01a`: the rule number, optionally followed by a letter identifying the specific check within that rule.
 To disable a rule, pass its ID or number to `-n`/`--no-warn` (e.g., `-n MADR01` or `-n 1` disables all `MADR01` checks).
+All rules with ID `MADR4x` are directory-level rules; they are checked for when an ADR directory is given in the argument. The rest is file-level rules that work
+on individual MADRs.
 
 ### Structural integrity
 
