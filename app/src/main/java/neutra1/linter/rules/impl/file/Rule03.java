@@ -5,7 +5,7 @@ import java.util.List;
 import com.vladsch.flexmark.util.ast.Node;
 
 import neutra1.linter.models.enums.DecisionOutcomeElements;
-import neutra1.linter.models.enums.MandatorySection;
+import neutra1.linter.models.enums.Section;
 import neutra1.linter.models.records.HeadingInfo;
 import neutra1.linter.models.records.Violation;
 import neutra1.linter.rules.IFileRule;
@@ -25,7 +25,7 @@ public class Rule03 extends SectionRule implements IFileRule {
 
     @Override
     public void check() {
-        HeadingInfo decisionOutcome = getHeadingInfoByText(MandatorySection.DECISION_OUTCOME.getPermittedTitles());
+        HeadingInfo decisionOutcome = getHeadingInfoByText(Section.DECISION_OUTCOME.getPermittedTitles());
         if (decisionOutcome == null){
             return;
         }
