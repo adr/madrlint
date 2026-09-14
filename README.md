@@ -66,6 +66,7 @@ To disable a rule, pass its ID or number to `-n`/`--no-warn` (e.g., `-n MADR01` 
 | `MADR05` | Only the title may have heading level 1.                                                                                                                                              |
 | `MADR06` | Headings must have the levels given in the MADR template.                                                                                                                             |
 | `MADR07` | Consequences (`a`) and Confirmation (`b`), if present, must be level-3 headings under Decision Outcome.                                                                               |
+| `MADR08` | The Title (`a`) and the level 2 headings defined in the template (`b`) must appear in the correct order.                                                                               |
 
 ### Link validity
 
