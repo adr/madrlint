@@ -2,7 +2,8 @@ package neutra1.linter.rules.impl.file;
 
 import java.util.List;
 
-import neutra1.linter.models.enums.MandatorySection;
+import neutra1.linter.models.enums.Section;
+import neutra1.linter.models.enums.SectionRequirement;
 import neutra1.linter.models.records.HeadingInfo;
 import neutra1.linter.models.records.Violation;
 import neutra1.linter.rules.HeadingRule;
@@ -25,7 +26,7 @@ public class Rule01 extends HeadingRule implements IFileRule {
     @Override
     public void check(){
         List<HeadingInfo> headingInfoList = traverser.getHeadingInfoList();
-        for (MandatorySection mandatorySection : MandatorySection.values()) {
+        for (Section mandatorySection : Section.getSectionsBasedOnRequirement(SectionRequirement.MANDATORY)) {
             boolean sectionPresent = false;
             for (HeadingInfo headingInfo : headingInfoList) {
                 if (mandatorySection.matches(headingInfo.text())) {

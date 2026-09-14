@@ -24,6 +24,7 @@ import neutra1.linter.rules.impl.file.Rule05;
 import neutra1.linter.rules.impl.file.Rule11;
 import neutra1.linter.rules.impl.file.Rule06;
 import neutra1.linter.rules.impl.file.Rule07;
+import neutra1.linter.rules.impl.file.Rule08;
 import neutra1.linter.rules.impl.file.Rule21;
 import neutra1.linter.rules.impl.file.Rule31;
 import neutra1.linter.rules.impl.file.Rule12;
@@ -83,6 +84,7 @@ public class Main implements Runnable {
             new Rule05(),
             new Rule06(),
             new Rule07(),
+            new Rule08(),
             new Rule11(),
             new Rule12(),
             new Rule21(),
