@@ -2,7 +2,6 @@ package neutra1.linter.models.enums;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Getter;
 
