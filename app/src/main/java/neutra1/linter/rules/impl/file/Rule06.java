@@ -1,7 +1,6 @@
 package neutra1.linter.rules.impl.file;
 
-import neutra1.linter.models.enums.MandatorySection;
-import neutra1.linter.models.enums.OptionalSection;
+import neutra1.linter.models.enums.Section;
 import neutra1.linter.models.records.HeadingInfo;
 import neutra1.linter.models.records.Violation;
 import neutra1.linter.rules.HeadingRule;
@@ -22,23 +21,23 @@ public class Rule06 extends HeadingRule implements IFileRule {
 
     @Override
     public void check(){
-        HeadingInfo context = getHeadingInfoByText(MandatorySection.CONTEXT.getPermittedTitles(), true);
-        HeadingInfo consideredOptions = getHeadingInfoByText(MandatorySection.CONSIDERED_OPTIONS.getPermittedTitles(), true);
-        HeadingInfo decisionOutcome = getHeadingInfoByText(MandatorySection.DECISION_OUTCOME.getPermittedTitles(), true);
-        HeadingInfo prosAndCons = getHeadingInfoByText(OptionalSection.PROS_AND_CONS.getPermittedTitles(), true);
-        HeadingInfo moreInformation = getHeadingInfoByText(OptionalSection.MORE_INFORMATION.getPermittedTitles(), true);
-        HeadingInfo decisionDrivers = getHeadingInfoByText(OptionalSection.DECISION_DRIVERS.getPermittedTitles(), true);
-        HeadingInfo consequences = getHeadingInfoByText(OptionalSection.CONSEQUENCES.getPermittedTitles(), true);
-        HeadingInfo confirmation = getHeadingInfoByText(OptionalSection.CONFIRMATION.getPermittedTitles(), true);
+        HeadingInfo context = getHeadingInfoByText(Section.CONTEXT.getPermittedTitles(), true);
+        HeadingInfo consideredOptions = getHeadingInfoByText(Section.CONSIDERED_OPTIONS.getPermittedTitles(), true);
+        HeadingInfo decisionOutcome = getHeadingInfoByText(Section.DECISION_OUTCOME.getPermittedTitles(), true);
+        HeadingInfo prosAndCons = getHeadingInfoByText(Section.PROS_AND_CONS.getPermittedTitles(), true);
+        HeadingInfo moreInformation = getHeadingInfoByText(Section.MORE_INFORMATION.getPermittedTitles(), true);
+        HeadingInfo decisionDrivers = getHeadingInfoByText(Section.DECISION_DRIVERS.getPermittedTitles(), true);
+        HeadingInfo consequences = getHeadingInfoByText(Section.CONSEQUENCES.getPermittedTitles(), true);
+        HeadingInfo confirmation = getHeadingInfoByText(Section.CONFIRMATION.getPermittedTitles(), true);
 
-        reportBadHeadingLevel(context, MandatorySection.CONTEXT.getPermittedHeadingLevel());
-        reportBadHeadingLevel(consideredOptions, MandatorySection.CONSIDERED_OPTIONS.getPermittedHeadingLevel());
-        reportBadHeadingLevel(decisionOutcome, MandatorySection.DECISION_OUTCOME.getPermittedHeadingLevel());
-        reportBadHeadingLevel(prosAndCons, OptionalSection.PROS_AND_CONS.getPermittedHeadingLevel());
-        reportBadHeadingLevel(moreInformation, OptionalSection.MORE_INFORMATION.getPermittedHeadingLevel());
-        reportBadHeadingLevel(decisionDrivers, OptionalSection.DECISION_DRIVERS.getPermittedHeadingLevel());
-        reportBadHeadingLevel(consequences, OptionalSection.CONSEQUENCES.getPermittedHeadingLevel());
-        reportBadHeadingLevel(confirmation, OptionalSection.CONFIRMATION.getPermittedHeadingLevel());
+        reportBadHeadingLevel(context, Section.CONTEXT.getPermittedHeadingLevel());
+        reportBadHeadingLevel(consideredOptions, Section.CONSIDERED_OPTIONS.getPermittedHeadingLevel());
+        reportBadHeadingLevel(decisionOutcome, Section.DECISION_OUTCOME.getPermittedHeadingLevel());
+        reportBadHeadingLevel(prosAndCons, Section.PROS_AND_CONS.getPermittedHeadingLevel());
+        reportBadHeadingLevel(moreInformation, Section.MORE_INFORMATION.getPermittedHeadingLevel());
+        reportBadHeadingLevel(decisionDrivers, Section.DECISION_DRIVERS.getPermittedHeadingLevel());
+        reportBadHeadingLevel(consequences, Section.CONSEQUENCES.getPermittedHeadingLevel());
+        reportBadHeadingLevel(confirmation, Section.CONFIRMATION.getPermittedHeadingLevel());
     }
 
     private void reportBadHeadingLevel(HeadingInfo headingInfo, int permittedHeadingLevel){

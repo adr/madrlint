@@ -9,8 +9,8 @@
 //SOURCES app/src/main/java/neutra1/linter/helper/LintContext.java
 //SOURCES app/src/main/java/neutra1/linter/models/enums/DecisionOutcomeElements.java
 //SOURCES app/src/main/java/neutra1/linter/models/enums/LinkType.java
-//SOURCES app/src/main/java/neutra1/linter/models/enums/MandatorySection.java
-//SOURCES app/src/main/java/neutra1/linter/models/enums/OptionalSection.java
+//SOURCES app/src/main/java/neutra1/linter/models/enums/Section.java
+//SOURCES app/src/main/java/neutra1/linter/models/enums/SectionRequirement.java
 //SOURCES app/src/main/java/neutra1/linter/models/enums/OutputFormat.java
 //SOURCES app/src/main/java/neutra1/linter/models/enums/ResourceType.java
 //SOURCES app/src/main/java/neutra1/linter/models/records/BulletListItemInfo.java
@@ -38,6 +38,7 @@
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule05.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule06.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule07.java
+//SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule08.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule11.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule12.java
 //SOURCES app/src/main/java/neutra1/linter/rules/impl/file/Rule21.java

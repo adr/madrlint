@@ -1,7 +1,6 @@
 package neutra1.linter.rules.impl.file;
 
-import neutra1.linter.models.enums.MandatorySection;
-import neutra1.linter.models.enums.OptionalSection;
+import neutra1.linter.models.enums.Section;
 import neutra1.linter.models.records.HeadingInfo;
 import neutra1.linter.models.records.Violation;
 import neutra1.linter.rules.HeadingRule;
@@ -23,13 +22,13 @@ public class Rule07 extends HeadingRule implements IFileRule {
 
     @Override
     public void check(){
-        HeadingInfo decisionOutcome = getHeadingInfoByText(MandatorySection.DECISION_OUTCOME.getPermittedTitles(), true);
+        HeadingInfo decisionOutcome = getHeadingInfoByText(Section.DECISION_OUTCOME.getPermittedTitles(), true);
         if (decisionOutcome == null){
             return;
         }
         String subsequenceDecisionOutcome = decisionOutcome.getBodyUnderHeading(true);
-        HeadingInfo consequences = getHeadingInfoByText(OptionalSection.CONSEQUENCES.getPermittedTitles(), true);
-        HeadingInfo confirmation = getHeadingInfoByText(OptionalSection.CONFIRMATION.getPermittedTitles(), true);
+        HeadingInfo consequences = getHeadingInfoByText(Section.CONSEQUENCES.getPermittedTitles(), true);
+        HeadingInfo confirmation = getHeadingInfoByText(Section.CONFIRMATION.getPermittedTitles(), true);
         reportFalseParenthood(RULE_ID_A, subsequenceDecisionOutcome, consequences);
         reportFalseParenthood(RULE_ID_B, subsequenceDecisionOutcome, confirmation);
     }

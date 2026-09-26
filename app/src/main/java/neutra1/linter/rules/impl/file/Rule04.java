@@ -3,7 +3,7 @@ package neutra1.linter.rules.impl.file;
 import com.vladsch.flexmark.util.ast.Node;
 
 import neutra1.linter.models.enums.DecisionOutcomeElements;
-import neutra1.linter.models.enums.MandatorySection;
+import neutra1.linter.models.enums.Section;
 import neutra1.linter.models.records.HeadingInfo;
 import neutra1.linter.models.records.Violation;
 import neutra1.linter.rules.IFileRule;
@@ -22,7 +22,7 @@ public class Rule04 extends SectionRule implements IFileRule {
 
     @Override
     public void check() {
-        HeadingInfo decisionOutcome = getHeadingInfoByText(MandatorySection.DECISION_OUTCOME.getPermittedTitles());
+        HeadingInfo decisionOutcome = getHeadingInfoByText(Section.DECISION_OUTCOME.getPermittedTitles());
         if (decisionOutcome == null || decisionOutcome.body().isEmpty()) {
             return;
         }
@@ -37,7 +37,7 @@ public class Rule04 extends SectionRule implements IFileRule {
         if (rationaleIndex == -1 || rationaleIndex < chosenOptionIndex) {
             String description = "Missing rationale after statement of chosen option. Expected format: 'Chosen option: <chosen option>, because <rationale>')";
             int lineNumber = getLineNumberByContent(
-                getHeadingInfoByText(MandatorySection.DECISION_OUTCOME.getPermittedTitles()),
+                getHeadingInfoByText(Section.DECISION_OUTCOME.getPermittedTitles()),
                 DecisionOutcomeElements.CHOSEN_OPTION.getKeywords());
             reporter.report(new Violation(RULE_ID, description, lineNumber));
         }
