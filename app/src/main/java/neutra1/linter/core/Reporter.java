@@ -34,6 +34,10 @@ public class Reporter {
         violationList.add(violation);
     }
 
+    public boolean hasViolations() {
+        return !violationList.isEmpty();
+    }
+
     public void outputDiagnostics(int disabledRuleCount, int disabledRelevantRuleCount, int totalRuleCount, boolean quietMode, OutputFormat outputFormat) {
         StringBuilder diagnosis = getDiagnosis(outputFormat);
         System.out.println(diagnosis.toString());
