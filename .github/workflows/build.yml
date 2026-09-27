@@ -32,7 +32,7 @@ jobs:
           cargo build --release
           
       - name: Upload compiled binary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: liblychee-linux
           path: |
@@ -41,7 +41,7 @@ jobs:
           if-no-files-found: error
 
       - name: Set up JDK 25
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: "25"
