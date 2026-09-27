@@ -9,7 +9,7 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
    application
    id("com.gradleup.shadow") version ("9.3.1")
-   id("org.graalvm.buildtools.native") version "1.1.11"
+   id("org.graalvm.buildtools.native") version "1.1.12"
 }
 
 repositories {
@@ -25,10 +25,10 @@ dependencies {
     implementation("info.picocli:picocli:4.7.7")
     annotationProcessor("info.picocli:picocli-codegen:4.7.7")
     // Lombok
-    compileOnly("org.projectlombok:lombok:1.18.46")
-    annotationProcessor("org.projectlombok:lombok:1.18.46")
-    testCompileOnly("org.projectlombok:lombok:1.18.46")
-    testAnnotationProcessor("org.projectlombok:lombok:1.18.46")
+    compileOnly("org.projectlombok:lombok:1.18.48")
+    annotationProcessor("org.projectlombok:lombok:1.18.48")
+    testCompileOnly("org.projectlombok:lombok:1.18.48")
+    testAnnotationProcessor("org.projectlombok:lombok:1.18.48")
     // Flexmark-Java for md parsing, core or extensions
     implementation("com.vladsch.flexmark:flexmark-ext-autolink:0.64.8")
     implementation("com.vladsch.flexmark:flexmark:0.64.8")
