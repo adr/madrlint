@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import neutra1.linter.core.ASTTraverser;
 import neutra1.linter.core.Reporter;
@@ -45,7 +46,7 @@ import picocli.CommandLine.Parameters;
     customSynopsis = "madrlint [-hOqV] [-n <rule>[,rule...]] [-o <outputFile>] [--output-format <format>] <madrFile>",
     version="1.1.0"
 )
-public class Main implements Runnable {
+public class Main implements Callable<Integer> {
 
     private final String RESET = "\u001B[0m";
     private final String RED   = "\u001B[31m";
@@ -66,7 +67,7 @@ public class Main implements Runnable {
     @Option(names = {"-r", "--root"}, description = "Set the root directory of the project. Defaults to current working directory if not specified.")
     private String root;
     @Override
-    public void run(){ 
+    public Integer call(){
         System.setProperty("jdk.httpclient.maxstreams", "200");
         String internalPath = currentDir.resolve(userPath).toString();
         LintContext.WORKING_DIR = currentDir.toString();
@@ -127,6 +128,7 @@ public class Main implements Runnable {
         else {
             reporter.outputDiagnostics(outputFile, disabledRuleCount, disabledRelevantRuleCount, totalRuleCount, override, quietMode, outputFormat);
         }
+        return reporter.hasViolations() ? 1 : 0;
     }
 
     public static void main(String[] args) {

@@ -50,6 +50,10 @@ madrlint <madrFile>
                                suppressed.
 ```
 
+### Exit codes
+
+`0` if no violations were found, `1` if violations were found or the input could not be read, `2` on invalid command-line usage.
+
 ## Rules
 
 Violations are reported with a rule ID such as `MADR01a`: the rule number, optionally followed by a letter identifying the specific check within that rule.
