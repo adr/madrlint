@@ -9,14 +9,14 @@ With [JBang](https://www.jbang.dev/) installed (requires JRE 21 or newer), the
 linter can be run directly from this repository without cloning:
 
 ```shell
-jbang madrlint@adr/madrlint <madrFile>
+jbang madrlint@adr/madrlint <madrFile> -n 11
 ```
 
 Or install it as a local command:
 
 ```shell
 jbang app install madrlint@adr/madrlint
-madrlint <madrFile>
+madrlint <madrFile> -n 11
 ```
 
 ## How-to-test
