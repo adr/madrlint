@@ -170,7 +170,7 @@ public class Main implements Callable<Integer> {
         if (!path.isAbsolute()){
             path = currentDir.resolve(filePath);
         }
-        String content = new String(Files.readAllBytes(path), StandardCharsets.US_ASCII);
+        String content = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
         return content;
     }
     
