@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The linted file is read as UTF-8 instead of US-ASCII, so text outside ASCII is no longer turned into replacement characters. [#39](https://github.com/adr/madrlint/pull/39)
 - madrlint now exits with code `1` when violations are found. [#24](https://github.com/adr/madrlint/pull/24)
 - Link checking no longer silently ignores failed client requests. [#23](https://github.com/adr/madrlint/pull/23)
 
