@@ -45,10 +45,20 @@ public abstract class LinkRule extends AbstractRule{
     }
 
     protected boolean pathExists(String urlText) throws InvalidPathException {
+        return Files.exists(resolveLocalPath(urlText));
+    }
+
+    /**
+     * Resolves a local link target: a root-relative path against the project root,
+     * any other path against the directory of the linted file.
+     */
+    protected Path resolveLocalPath(String urlText) throws InvalidPathException {
+        if (isRootRelativeLink(urlText)) {
+            return Paths.get(LintContext.PROJECT_ROOT).resolve(urlText.substring(1)).normalize();
+        }
         Path madrPath = Paths.get(LintContext.INTERNAL_PATH);
         Path containingDir = madrPath.getParent();
-        Path resolvedPath = containingDir.resolve(urlText).normalize();
-        return Files.exists(resolvedPath);    
+        return containingDir.resolve(urlText).normalize();
     }
     
 }

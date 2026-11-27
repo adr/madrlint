@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Anchor links into other files, such as `other.md#heading`, are checked against that file's headings instead of the linted file's, and a missing target file is reported as an invalid local path. [#38](https://github.com/adr/madrlint/pull/38)
+- Heading anchors follow GitHub's slugs, so headings with hyphens, inline markup, letters outside ASCII, or repeated titles (`-1`, `-2`) resolve. [#38](https://github.com/adr/madrlint/pull/38)
 - madrlint now exits with code `1` when violations are found. [#24](https://github.com/adr/madrlint/pull/24)
 - Link checking no longer silently ignores failed client requests. [#23](https://github.com/adr/madrlint/pull/23)
 

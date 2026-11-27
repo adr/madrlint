@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.github.sbaudoin.yamllint.LintProblem;
@@ -18,6 +19,7 @@ import com.vladsch.flexmark.ast.Paragraph;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.ast.Node;
 import com.vladsch.flexmark.util.ast.NodeVisitor;
+import com.vladsch.flexmark.util.ast.TextCollectingVisitor;
 import com.vladsch.flexmark.util.ast.VisitHandler;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import com.vladsch.flexmark.ast.Reference;
@@ -39,6 +41,7 @@ public class ASTTraverser {
 
     private List<String> output;
     private List<HeadingInfo> headingInfoList;
+    private List<String> headingSlugList;
     private List<BulletListItemInfo> bulletListInfoList;
     private List<LinkInfo> linkInfoList;
     private List<MetadataInfo> metadataInfoList;
@@ -50,6 +53,7 @@ public class ASTTraverser {
     private ASTTraverser() {
         this.output = new ArrayList<>();
         this.headingInfoList = new ArrayList<>();
+        this.headingSlugList = new ArrayList<>();
         this.bulletListInfoList = new ArrayList<>();
         this.linkInfoList = new ArrayList<>();
         this.metadataInfoList = new ArrayList<>();
@@ -73,13 +77,54 @@ public class ASTTraverser {
     }
 
     public void traverse(String markdown) {
+        this.document = newParser().parse(markdown);
+        visitor.visit(this.document);
+        this.headingSlugList = headingSlugsOf(this.document);
+    }
+
+    /**
+     * Returns the anchor slugs of the headings in another Markdown document, in document order.
+     * Links such as {@code other.md#heading} are checked against them.
+     * Parsing here leaves the state of the linted file untouched.
+     */
+    public static List<String> headingSlugsOf(String markdown) {
+        return headingSlugsOf(newParser().parse(markdown));
+    }
+
+    /**
+     * Generates heading anchors as GitHub does (github-slugger): the heading's plain text is
+     * lowercased, characters other than letters, marks, decimal and letter numbers, connector
+     * punctuation, other alphabetic characters, hyphens, and spaces are removed, and each space
+     * becomes a hyphen. Other numbers, such as {@code ²}, and symbols are therefore removed.
+     * A repeated slug gets the suffix {@code -1}, {@code -2}, and so on.
+     */
+    private static List<String> headingSlugsOf(Node document) {
+        Map<String, Integer> occurrences = new HashMap<>();
+        List<String> slugs = new ArrayList<>();
+        for (Node node : document.getDescendants()) {
+            if (node instanceof Heading heading) {
+                String plainText = new TextCollectingVisitor().collectAndGetText(heading);
+                String originalSlug = plainText.toLowerCase(Locale.ROOT)
+                        .replaceAll("[^\\p{L}\\p{M}\\p{Nd}\\p{Nl}\\p{Pc}\\p{IsAlphabetic}\\- ]", "")
+                        .replace(' ', '-');
+                String slug = originalSlug;
+                while (occurrences.containsKey(slug)) {
+                    int count = occurrences.merge(originalSlug, 1, Integer::sum);
+                    slug = originalSlug + "-" + count;
+                }
+                occurrences.put(slug, 0);
+                slugs.add(slug);
+            }
+        }
+        return slugs;
+    }
+
+    private static Parser newParser() {
         MutableDataSet options = new MutableDataSet();
         options.set(Parser.TRACK_DOCUMENT_LINES, true);
         options.set(HtmlRenderer.GENERATE_HEADER_ID, true);
         options.set(Parser.EXTENSIONS, List.of(YamlFrontMatterExtension.create(), HtmlCommentRemoverExtension.create()));
-        Parser parser = Parser.builder(options).build();
-        this.document = parser.parse(markdown);
-        visitor.visit(this.document);
+        return Parser.builder(options).build();
     }
 
     private void visitHeading(Heading heading) {

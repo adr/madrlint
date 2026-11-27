@@ -38,14 +38,4 @@ public record HeadingInfo(String text, String rawText, String anchorRefId, int l
         }
         return null;
     }
-
-    public String toSlug(){
-        // Note: this does not work if there are multiple subheadings of the same name under different parent headings.
-        String slug = this.text
-                    .toLowerCase()
-                    .replaceAll("[^a-z0-9\\s]", "")
-                    .trim()
-                    .replaceAll("\\s+", "-");
-        return slug;
-    }
 }

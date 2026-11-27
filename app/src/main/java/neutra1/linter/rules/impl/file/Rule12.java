@@ -1,15 +1,17 @@
 package neutra1.linter.rules.impl.file;
 
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import neutra1.linter.core.ASTTraverser;
 import neutra1.linter.helper.LintContext;
 import neutra1.linter.models.enums.LinkType;
-import neutra1.linter.models.records.HeadingInfo;
 import neutra1.linter.models.records.LinkInfo;
 import neutra1.linter.models.records.Violation;
 import neutra1.linter.rules.IFileRule;
@@ -45,12 +47,7 @@ public class Rule12 extends LinkRule implements IFileRule {
                 absolutePaths.put(url, startLineNumber);
             }
             else if (isAnchorLink(url)){
-                List<HeadingInfo> headingInfoList = traverser.getHeadingInfoList();
-                List<String> slugList = headingInfoList.stream().map(headingInfo -> headingInfo.toSlug()).toList();
-                boolean matches = slugList.stream().anyMatch(slug -> slug.equals(url.substring(1)));
-                if (!matches){
-                    badAnchorLinks.put(url, startLineNumber);
-                }
+                checkAnchorLink(url, startLineNumber, badLocalPaths, badAnchorLinks);
             }
             else if (isRootRelativeLink(url)){
                 String urlRelativized = url.substring(1);
@@ -76,6 +73,54 @@ public class Rule12 extends LinkRule implements IFileRule {
         buildDescription("Invalid root relative path detected: ", badRootRelativePaths, RULE_ID_C);
         buildDescription("Non-renderable absolute path detected:", absolutePaths, RULE_ID_D);    
     } 
+
+    /**
+     * Checks a link with a fragment.
+     * A fragment alone refers to a heading of the linted file.
+     * A fragment after a path refers to a heading of that file, which must exist.
+     * Fragments into files other than Markdown are not checked.
+     */
+    private void checkAnchorLink(String url, int lineNumber, Map<String, Integer> badLocalPaths, Map<String, Integer> badAnchorLinks){
+        int hashIndex = url.indexOf('#');
+        String pathPart = url.substring(0, hashIndex);
+        String fragment = url.substring(hashIndex + 1);
+        List<String> slugList;
+        if (pathPart.isEmpty()){
+            slugList = traverser.getHeadingSlugList();
+        }
+        else {
+            Path target;
+            try {
+                target = resolveLocalPath(pathPart);
+            }
+            catch (InvalidPathException e){
+                badLocalPaths.put(url, lineNumber);
+                return;
+            }
+            if (!Files.exists(target)){
+                badLocalPaths.put(url, lineNumber);
+                return;
+            }
+            if (!Files.isRegularFile(target) || !isMarkdownFile(target)){
+                return;
+            }
+            try {
+                slugList = ASTTraverser.headingSlugsOf(Files.readString(target));
+            }
+            catch (IOException e){
+                badLocalPaths.put(url, lineNumber);
+                return;
+            }
+        }
+        if (!slugList.contains(fragment)){
+            badAnchorLinks.put(url, lineNumber);
+        }
+    }
+
+    private boolean isMarkdownFile(Path path){
+        String name = path.getFileName().toString().toLowerCase();
+        return name.endsWith(".md") || name.endsWith(".markdown");
+    }
 
     private void buildDescription(String foreword, Map<String, Integer> brokenLinks, String ruleId){
         if (brokenLinks.isEmpty()){
